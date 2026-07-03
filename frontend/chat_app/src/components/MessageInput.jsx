@@ -281,13 +281,13 @@ const MessageInput = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSendMessage} className="flex items-center gap-1 sm:gap-2">
+      <form onSubmit={handleSendMessage} className="w-full flex items-center gap-1 sm:gap-2">
         <div className="flex-1 flex gap-1 sm:gap-1.5 items-center bg-base-200/50 p-1 sm:p-1.5 rounded-xl border border-base-content/10 min-w-0">
           
           {/* Emoji Picker Button */}
           <button
             type="button"
-            className={`btn btn-ghost btn-circle btn-sm ${showEmojiPicker ? "text-primary" : "text-zinc-400"}`}
+            className={`p-1.5 rounded-full hover:bg-base-300 transition-colors flex-shrink-0 ${showEmojiPicker ? "text-primary" : "text-zinc-400"}`}
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
           >
             <Smile size={18} />
@@ -296,7 +296,7 @@ const MessageInput = () => {
           {/* Paperclip Button for Files */}
           <button
             type="button"
-            className={`btn btn-ghost btn-circle btn-sm ${filePreview ? "text-primary" : "text-zinc-400"}`}
+            className={`p-1.5 rounded-full hover:bg-base-300 transition-colors flex-shrink-0 ${filePreview ? "text-primary" : "text-zinc-400"}`}
             onClick={() => rawFileInputRef.current?.click()}
           >
             <Paperclip size={18} />
@@ -305,7 +305,7 @@ const MessageInput = () => {
           {/* Image Upload Button */}
           <button
             type="button"
-            className={`btn btn-ghost btn-circle btn-sm ${imagePreview ? "text-primary" : "text-zinc-400"}`}
+            className={`p-1.5 rounded-full hover:bg-base-300 transition-colors flex-shrink-0 ${imagePreview ? "text-primary" : "text-zinc-400"}`}
             onClick={() => fileInputRef.current?.click()}
           >
             <Image size={18} />
@@ -356,7 +356,7 @@ const MessageInput = () => {
           {!isRecording && !voicePreview && (
             <button
               type="button"
-              className="btn btn-ghost btn-circle btn-sm text-zinc-400 hover:text-red-500 flex-shrink-0"
+              className="p-1.5 rounded-full hover:bg-base-300 transition-colors text-zinc-400 hover:text-red-500 flex-shrink-0"
               onClick={startRecording}
             >
               <Mic size={18} />
