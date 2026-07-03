@@ -4,7 +4,7 @@
   "description": "Monorepo scripts to build and deploy fullstack Chatty",
   "scripts": {
     "install-backend": "cd backend && npm install",
-    "install-frontend": "cd frontend/chat_app && npm install",
+    "install-frontend": "cd frontend/chat_app && npm install --include=dev",
     "build-frontend": "cd frontend/chat_app && npm run build",
     "build": "npm run install-backend && npm run install-frontend && npm run build-frontend",
     "start": "cd backend && node src/index.js"
