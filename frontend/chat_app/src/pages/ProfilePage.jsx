@@ -7,6 +7,19 @@ import { axiosInstance } from "../lib/axios";
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
   const [selectedImg, setSelectedImg] = useState(null);
+  const [bioText, setBioText] = useState(authUser?.bio || "");
+  const [isUpdatingBio, setIsUpdatingBio] = useState(false);
+
+  const handleBioSave = async () => {
+    setIsUpdatingBio(true);
+    try {
+      await updateProfile({ bio: bioText });
+    } catch (err) {
+      toast.error("Failed to update bio");
+    } finally {
+      setIsUpdatingBio(false);
+    }
+  };
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -92,6 +105,28 @@ const ProfilePage = () => {
               <p className="px-4 py-2.5 bg-base-200 rounded-lg border">
                 {authUser?.email}
               </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="text-sm text-zinc-400 flex items-center gap-2">
+                <span>About / Status</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  className="input input-bordered w-full rounded-lg bg-base-200"
+                  placeholder="Set your status/bio..."
+                  value={bioText}
+                  onChange={(e) => setBioText(e.target.value)}
+                />
+                <button
+                  onClick={handleBioSave}
+                  disabled={isUpdatingBio || bioText === authUser?.bio}
+                  className="btn btn-primary"
+                >
+                  {isUpdatingBio ? "Saving..." : "Save"}
+                </button>
+              </div>
             </div>
           </div>
 

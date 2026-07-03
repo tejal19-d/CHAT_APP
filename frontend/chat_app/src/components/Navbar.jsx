@@ -1,50 +1,81 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { LogOut, MessageSquare, Settings, User } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   return (
-    <header
-      className="bg-base-100 border-b border-base-300 fixed w-full top-0 z-40 
-    backdrop-blur-lg bg-base-100/80"
-    >
-      <div className="container mx-auto px-4 h-16">
+    <header className="bg-base-100/75 backdrop-blur-md border-b border-base-content/5 fixed w-full top-0 z-40 transition-all duration-200">
+      <div className="max-w-7xl mx-auto px-6 h-14">
         <div className="flex items-center justify-between h-full">
-          <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-all">
-              <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <MessageSquare className="w-5 h-5 text-primary" />
+          {/* Brand/Logo */}
+          <div className="flex items-center gap-4">
+            <Link to="/" className="flex items-center gap-2 group hover:opacity-95 transition-opacity">
+              <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-all duration-200">
+                <MessageSquare className="w-4 h-4 text-primary" />
               </div>
-              <h1 className="text-lg font-bold">Chatty</h1>
+              <h1 className="text-md font-bold tracking-tight text-base-content">Chatty</h1>
             </Link>
+            {!isOnline && (
+              <span className="badge badge-error gap-1 text-[9px] uppercase font-extrabold px-2 py-0.5">
+                <span className="size-1 bg-white rounded-full animate-ping" />
+                Offline
+              </span>
+            )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link
-              to={"/settings"}
-              className={`
-              btn btn-sm gap-2 transition-colors
-              
-              `}
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Settings</span>
-            </Link>
-<ThemeToggle />
+          {/* Navigation Controls */}
+          <div className="flex items-center gap-1.5">
+            {/* Theme Toggle Button */}
+            <div className="tooltip tooltip-bottom" data-tip="Switch Theme">
+              <ThemeToggle />
+            </div>
+
             {authUser && (
               <>
-                <Link to={"/profile"} className={`btn btn-sm gap-2`}>
-                  <User className="size-5" />
-                  <span className="hidden sm:inline">Profile</span>
-                </Link>
+                {/* Profile Link */}
+                <div className="tooltip tooltip-bottom" data-tip="My Profile">
+                  <Link to="/profile" className="btn btn-ghost btn-circle btn-sm text-base-content/80 hover:text-primary transition-colors">
+                    <User size={18} />
+                  </Link>
+                </div>
 
-                <button className="flex gap-2 items-center" onClick={logout}>
-                  <LogOut className="size-5" />
-                  <span className="hidden sm:inline">Logout</span>
-                </button>
+                {/* Settings Link */}
+                <div className="tooltip tooltip-bottom" data-tip="Settings">
+                  <Link to="/settings" className="btn btn-ghost btn-circle btn-sm text-base-content/80 hover:text-primary transition-colors">
+                    <Settings size={18} />
+                  </Link>
+                </div>
+
+                {/* Separator */}
+                <span className="h-4 w-px bg-base-content/10 mx-1"></span>
+
+                {/* Logout Button */}
+                <div className="tooltip tooltip-bottom" data-tip="Logout">
+                  <button 
+                    onClick={logout} 
+                    className="btn btn-ghost btn-circle btn-sm text-base-content/80 hover:text-red-500 transition-colors"
+                  >
+                    <LogOut size={18} />
+                  </button>
+                </div>
               </>
             )}
           </div>
@@ -53,4 +84,5 @@ const Navbar = () => {
     </header>
   );
 };
+
 export default Navbar;

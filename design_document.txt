@@ -1,0 +1,170 @@
+================================================================================
+CHATTY - ENTERPRISE MERN CHAT APPLICATION
+TECHNICAL DESIGN & ARCHITECTURE DOCUMENT
+================================================================================
+
+Prepared by : Antigravity AI Partner
+Version      : 2.0.0 (Enterprise Ready)
+Date         : July 2026
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Executive Summary
+2. Technology Stack
+3. System Architecture & Real-Time Flow
+4. Database Schema & Data Models
+5. Security, Reliability & Performance Controls
+6. WhatsApp UI Transformation & UX Enhancements
+7. Verification & Operation Guidelines
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------
+Chatty is a secure, real-time, enterprise-ready messaging platform built on top of 
+the MERN (MongoDB, Express, React, Node.js) stack. The application provides 
+instantaneous user-to-user communication with robust state synchronization, real-time 
+typing indicators, read receipts, and user presence tracking. 
+
+The application is structured to decouple frontend client interfaces and backend 
+resource processing. To meet enterprise requirements, the codebase incorporates 
+extensive security headers, rate-limiters, custom NoSQL injection protection, 
+structured logger mechanisms, and database telemetry monitoring endpoints.
+
+--------------------------------------------------------------------------------
+2. TECHNOLOGY STACK
+--------------------------------------------------------------------------------
+• Backend Server      : Node.js (v18+) with Express.js framework
+• Database            : MongoDB (Mongoose ODM layer)
+• Real-Time Gateway   : Socket.io (WebSocket client-server gateway wrapper)
+• Media Storage       : Cloudinary API (for profile photo uploads)
+• Frontend Client     : React (Vite-powered Single Page Application framework)
+• State Management    : Zustand (reactive store system with React hooks)
+• CSS Design System   : Tailwind CSS & DaisyUI theme utility framework
+
+--------------------------------------------------------------------------------
+3. SYSTEM ARCHITECTURE & REAL-TIME FLOW
+--------------------------------------------------------------------------------
+The backend is structured as a stateless REST API combined with a stateful 
+Socket.io real-time server. The client is a Single Page Application (SPA) that 
+interacts with the backend via:
+1. REST Endpoints (HTTP JSON requests) - for authentication, settings, profiles, 
+   history retrieval.
+2. WebSocket Channels (Bi-directional Socket.io) - for instantaneous events.
+
+WebSocket events mapped in the system:
+• connection: Fired when the client establishes socket handshakes. Connects 
+  the client's User ObjectId with their socket ID to manage connection presence, 
+  and broadcasts the online users list to all active clients.
+• disconnect: Triggered on user exit, removing socket mapping references 
+  and updating global presence arrays.
+• typing: Forwards typing status packets (receiverId, isTyping) directly 
+  to the recipient socket, prompting "User is typing..." alerts.
+• newMessage: Broadcasts the message object instantly to the receiver's socket ID.
+• messagesRead: Signals the sender that their messages have been read, updating 
+  ticks to blue.
+• messageDeleted: Signals both client containers to remove a message in real-time.
+
+--------------------------------------------------------------------------------
+4. DATABASE SCHEMA & DATA MODELS
+--------------------------------------------------------------------------------
+MongoDB contains two primary collections managed by Mongoose schemas.
+
+A. User Model Collection
+-------------------------
+{
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  fullName: {
+    type: String,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true,
+    minlength: 6
+  },
+  profilePic: {
+    type: String,
+    default: ""
+  },
+  bio: {
+    type: String,
+    default: "Hey there! I am using ChatApp."
+  }
+}
+* Timestamps: createdAt and updatedAt fields are generated automatically.
+
+B. Message Model Collection
+----------------------------
+{
+  senderId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  receiverId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  text: {
+    type: String
+  },
+  image: {
+    type: String
+  },
+  isRead: {
+    type: Boolean,
+    default: false
+  }
+}
+* Timestamps: createdAt and updatedAt fields are generated automatically.
+
+--------------------------------------------------------------------------------
+5. SECURITY, RELIABILITY & PERFORMANCE CONTROLS
+--------------------------------------------------------------------------------
+• Helmet Security Headers: Integrates security-focused HTTP headers to protect 
+  against clickjacking, cross-site scripting (XSS), and script execution exploits.
+• API Rate Limiting: Limits clients to 200 API requests per 15-minute window 
+  to block automated brute-force attacks and service abuse.
+• Custom NoSQL Injection Protection: Sanitization middleware sweeps incoming req.body, 
+  req.query, and req.params, stripping key expressions starting with $ or containing 
+  dots (.) to block MongoDB command injections.
+• Global Error boundaries: Intercepts unhandled errors, logs complete tracebacks 
+  via Winston, and responds with standardized JSON error schemas to prevent app crashes.
+• Winston & Morgan Logger Integration: Logs HTTP requests and errors in structured JSON 
+  format for production diagnostics.
+• Health Monitoring Check: Exposes /api/health to retrieve server uptime, memory usage, 
+  and database connection state.
+
+--------------------------------------------------------------------------------
+6. WHATSAPP UI TRANSFORMATION & UX ENHANCEMENTS
+--------------------------------------------------------------------------------
+The visual layout and states are styled to replicate WhatsApp Web:
+
+• Sidebar Previews: Rows show the contact's name, avatar, last message text, 
+  last message timestamp, message status ticks, and unread counts.
+• Unread Counts Badges: A green badge highlights unread incoming messages, 
+  clearing instantly when selected.
+• Dynamic Chat Sorting: The contact list dynamically re-orders by recent activity; 
+  contacts with the latest message float to the top of the sidebar.
+• Beige Sand Wallpaper: The chat window employs WhatsApp's light-beige (#efeae2) 
+  canvas overlay (and slate-black #0b141a in dark mode).
+• Speech Bubbles:
+  - Sent messages: light green (#d9fdd3 light / #005c4b dark) with sharp top-right corners.
+  - Received messages: solid white (#ffffff light / #202c33 dark) with sharp top-left corners.
+• Floating Emoji Panel: Toggleable grid next to input lets users insert emojis.
+• Connection Alert Banner: Pulses "Offline" next to logo if network connectivity drops.
+
+--------------------------------------------------------------------------------
+7. VERIFICATION & OPERATION GUIDELINES
+--------------------------------------------------------------------------------
+To operate the project, run:
+• Backend server: "npm run dev" inside backend/ directory (runs node on port 5001).
+• Frontend client: "npm run dev" inside frontend/chat_app/ directory (Vite server on port 5173).
+• Production builds: "npm run build" in client folder to compile optimized bundles.
+================================================================================
