@@ -8,10 +8,7 @@ const HomePage = () => {
   const { selectedUser } = useChatStore();
 
   return (
-    <div className="h-screen bg-base-200 overflow-hidden flex flex-col">
-      {/* Spacer for the fixed Navbar */}
-      <div className="h-14"></div>
-
+    <div className="h-screen bg-base-200 overflow-hidden flex flex-col pt-14">
       <div className="flex-1 bg-base-200 overflow-hidden">
         {/* On mobile: takes full width and height, aligned to the top. On desktop: centered card styling. */}
         <div className="w-full h-full md:p-4 md:flex md:items-center md:justify-center">
