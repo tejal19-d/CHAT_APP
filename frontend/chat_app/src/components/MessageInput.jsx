@@ -281,8 +281,8 @@ const MessageInput = () => {
         </div>
       </div>
 
-      <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-        <div className="flex-1 flex gap-2 items-center bg-base-200/50 p-1.5 rounded-xl border border-base-content/10">
+      <form onSubmit={handleSendMessage} className="flex items-center gap-1 sm:gap-2">
+        <div className="flex-1 flex gap-1 sm:gap-1.5 items-center bg-base-200/50 p-1 sm:p-1.5 rounded-xl border border-base-content/10 min-w-0">
           
           {/* Emoji Picker Button */}
           <button
@@ -344,7 +344,7 @@ const MessageInput = () => {
           ) : (
             <input
               type="text"
-              className="flex-1 bg-transparent border-0 outline-none px-2 h-9 text-sm text-base-content"
+              className="flex-1 bg-transparent border-0 outline-none px-1 sm:px-2 h-9 text-sm text-base-content min-w-0"
               placeholder="Type a message..."
               value={text}
               onChange={handleTextChange}
@@ -356,7 +356,7 @@ const MessageInput = () => {
           {!isRecording && !voicePreview && (
             <button
               type="button"
-              className="btn btn-ghost btn-circle btn-sm text-zinc-400 hover:text-red-500"
+              className="btn btn-ghost btn-circle btn-sm text-zinc-400 hover:text-red-500 flex-shrink-0"
               onClick={startRecording}
             >
               <Mic size={18} />
@@ -366,7 +366,7 @@ const MessageInput = () => {
 
         <button
           type="submit"
-          className="btn btn-primary btn-sm btn-circle"
+          className="btn btn-primary btn-sm btn-circle flex-shrink-0"
           disabled={!text.trim() && !imagePreview && !filePreview && !voicePreview}
         >
           <Send size={16} />
