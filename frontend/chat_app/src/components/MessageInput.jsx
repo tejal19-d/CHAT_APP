@@ -207,7 +207,7 @@ const MessageInput = () => {
   };
 
   return (
-    <div className="p-4 w-full relative">
+    <div className="p-2 sm:p-4 w-full relative">
       {/* Emoji Picker Grid */}
       {showEmojiPicker && (
         <div className="absolute bottom-16 right-4 sm:right-20 bg-base-300 border border-zinc-700 rounded-lg p-2 max-w-[280px] h-[200px] overflow-y-auto grid grid-cols-8 gap-1.5 z-50 shadow-xl">
